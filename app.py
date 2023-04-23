@@ -1,13 +1,17 @@
 import streamlit as st
+import requests
 import pickle
 import pandas as pd
 from nltk.tokenize import RegexpTokenizer
 from nltk.stem.snowball import SnowballStemmer
 from sklearn.feature_extraction.text import CountVectorizer
 
+# URL вашего файла модели на GitHub
+url = "https://raw.githubusercontent.com/petrakofff/spam/main/models/myfile.pkl"
+
 # Загрузка модели
-with open('myfile.pkl', 'rb') as input:
-    model = pickle.load(input)
+response = requests.get(url)
+model = pickle.loads(response.content)
 
 # Функция предобработки данных
 def prepare_data(url):
@@ -37,4 +41,3 @@ if st.button('Проверить'):
         st.write('Это спам!')
     else:
         st.write('Это не спам.')
-

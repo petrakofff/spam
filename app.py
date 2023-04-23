@@ -1,5 +1,9 @@
 import pickle
 import streamlit as st
+from sklearn.externals import joblib
+
+# Load the pre-trained model
+spam_classifier = joblib.load('spam_classifier.pkl')
 
 # Загрузка обученной модели из файла
 with open('spam_classifier.pkl', 'rb') as f:

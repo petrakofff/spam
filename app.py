@@ -7,7 +7,7 @@ from nltk.stem.snowball import SnowballStemmer
 from sklearn.feature_extraction.text import CountVectorizer
 
 # URL вашего файла модели на GitHub
-url = "https://raw.githubusercontent.com/petrakofff/spam/main/models/myfile.pkl"
+url = "https://raw.githubusercontent.com/<petrakofff>/<spam>/<main>/models/myfile.pkl"
 
 # Загрузка модели
 response = requests.get(url)

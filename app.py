@@ -5,34 +5,36 @@ from nltk.tokenize import RegexpTokenizer
 from nltk.stem.snowball import SnowballStemmer
 from sklearn.feature_extraction.text import CountVectorizer
 
-# Загрузка обученной модели из файла
-with open('LR.pkl', 'rb') as f:
-    model = pickle.load(f)
+# Загрузка модели
+with open('myfile.pkl', 'rb') as input:
+    model = pickle.load(input)
 
-# Определение функции для классификации ссылки
-def classify_link(link):
+# Функция предобработки данных
+def prepare_data(url):
     tokenizer = RegexpTokenizer(r'[A-Za-z]+')
     stemmer = SnowballStemmer("english")
     cv = CountVectorizer()
+    text_tokenized = tokenizer.tokenize(url)
+    text_stemmed = [stemmer.stem(word) for word in text_tokenized]
+    text_sent = ' '.join(text_stemmed)
+    features = cv.fit_transform([text_sent])
+    return features
 
-    link_tokenized = tokenizer.tokenize(link)
-    link_stemmed = [stemmer.stem(word) for word in link_tokenized]
-    link_sent = ' '.join(link_stemmed)
+# Заголовок приложения
+st.title('Спам-детектор')
 
-    features = cv.fit_transform([link_sent])
+# Поле для ввода ссылки
+url = st.text_input('Введите URL для проверки:')
+
+# Кнопка для проверки
+if st.button('Проверить'):
+    # Предобработка данных
+    features = prepare_data(url)
+    # Применение модели для предсказания
     prediction = model.predict(features)
+    # Вывод результата
     if prediction[0] == 1:
-        return "Спам"
+        st.write('Это спам!')
     else:
-        return "Не спам"
+        st.write('Это не спам.')
 
-# Создание веб-страницы с помощью Streamlit
-st.title("Классификация ссылок на спам")
-
-# Получение ссылки от пользователя
-link = st.text_input("Введите ссылку для классификации")
-
-# Обработка ссылки и вывод результата
-if link:
-    classification = classify_link(link)
-    st.write("Результат классификации:", classification)
